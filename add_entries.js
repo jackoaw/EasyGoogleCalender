@@ -40,23 +40,41 @@ $(document).ready(function(){
 			// Day of the week, assuming
 			else
 			{
-				if (rawTime[i].toLowerCase() == "monday"
-					rawTime[i].toLowerCase() == "tuesday"
-					rawTime[i].toLowerCase() == "wednesday"
-					rawTime[i].toLowerCase() == "thursday"
-					rawTime[i].toLowerCase() == "friday"
-					rawTime[i].toLowerCase() == "saturday"
-					rawTime[i].toLowerCase() == "sunday")
+				if (rawTime[i].toLowerCase() == "monday")
 				{
-					
+
+				}
+				if(rawTime[i].toLowerCase() == "tuesday")
+				{
+
+				}
+				if(rawTime[i].toLowerCase() == "wednesday")
+				{
+
+				}
+				if(rawTime[i].toLowerCase() == "thursday")
+				{
+
+				}
+				if(rawTime[i].toLowerCase() == "friday")
+				{
+
+				}
+				if(rawTime[i].toLowerCase() == "saturday")
+				{
+
+				}
+				if(rawTime[i].toLowerCase() == "sunday")
+				{
+
 				}
 			}
-		};
+		}
 	}
 
-	function findNextDay()
+	function findNextDay(dayOfWeek)
 	{
-
+		
 	}
 
 	function sendRequest()
