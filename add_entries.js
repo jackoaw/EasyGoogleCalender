@@ -11,6 +11,9 @@ $(document).ready(function(){
 		var lines = String(text).split("\n")
 		for (var i = 0; i < lines.length; i++) 
 		{
+			// Comment
+			if(lines[i].charAt(0) == "#" || lines[i].replace(" ","").length==0)
+				continue;
 			var parts = lines[i].split("=");
 			var date = parts[0];
 			var timeDate = dt(date.split(" "));
@@ -26,11 +29,11 @@ $(document).ready(function(){
 				'summary': descripion,
 				'location': location,
 				'start': {
-    				'dateTime': time1 + time2,
+    				'dateTime': time1.toString(),
     				'timeZone': 'America/Los_Angeles'
   				},
 			    'end': {
-			    	'dateTime': time1 + time2,
+			    	'dateTime': time2.toString(),
 			    	'timeZone': 'America/Los_Angeles'
   				},
 			}
@@ -49,7 +52,7 @@ $(document).ready(function(){
 		var date = new Date();
 		for (var i = 0; i < rawTime.length; i++) {
 			// Time
-			if(rawTime[i].split(":").length > 0)
+			if(rawTime[i].split(":").length > 1)
 			{
 				// if a date is not set, assume today
 				var time = rawTime[i].replace(" ","");
@@ -57,74 +60,88 @@ $(document).ready(function(){
 				// There is a speficied end time
 				if(timeToFrom.length > 0) 
 				{
+					// console.log(timeToFrom[0]);
 					date.setTime(timeToFrom[0]);
+					// console.log(date.toString()); // Invalid date here
 					dates.push(date);
-					var date2 = jQuery.extend(true, {}, date);
+					var date2 = new Date();
+					date2.setDate(date.getDay());
 					dates.push(date2.setTime(timeToFrom[1]));
 				}
 				else
 				{
 					date.setTime(timeToFrom[0]);
 					dates.push(date);
-					var date2 = jQuery.extend(true, {}, date);
+					var date2 = new Date();
+					date2.setDate(date.getDay());
 					// assume default time of one hour
-					dates.push(date2.setTime(date.getTime()+1));
+					dates.push(date2.setHours(date.getHours()+1));
 				}
 			}
 			// Date
-			else if(rawTime[i].split("/").length > 0)
+			else if(rawTime[i].split("/").length > 1)
 			{
-				date.setDay(rawTime[i]);
+				date.setDate(rawTime[i]);
 			}
 			// Day of the week, assuming
 			// Automatically determine the date based on a given day, chose the nearest one.
 			else
 			{
 				// Sunday by default
-				var curDay = 0
-				var day = date.getDay();
+				var day = ""
+				var curDay = date.getDay();
 				if (rawTime[i].toLowerCase() == "monday")
 				{
-					curDay = 1;
+					day = 1;
 				}
 				else if(rawTime[i].toLowerCase() == "tuesday")
 				{
-					curDay = 2;
+					day = 2;
 				}
 				else if(rawTime[i].toLowerCase() == "wednesday")
 				{
-					curDay = 3;
+					day = 3;
 				}
 				else if(rawTime[i].toLowerCase() == "thursday")
 				{
-					curDay = 4;
+					day = 4;
 				}
 				else if(rawTime[i].toLowerCase() == "friday")
 				{
-					curDay = 5;
+					day = 5;
 				}
 				else if(rawTime[i].toLowerCase() == "saturday")
 				{
-					curDay = 6;
+					day = 6;
 				}
 				else
 					continue;
 				if (day < curDay)
-					day += 7
+					day += 7;
 				var daysNeeded = day - curDay;
 				for (var i = 0; i < daysNeeded; i++) 
 				{
 					try
 					{
-						date.setDay(date.getDay()+1)
+						date.setDate(date.getDay()+1)
 					}
 					catch(e)
 					{
 						// Could not set date for some reason
-					}
+					}	
 				}
+				dates.push(date);
 			}
 		}
+		if(dates.length < 2)
+		{
+			var dateTo = new Date();
+			dateTo.setHours(date.getHours()+1);
+			dateTo.setDate(date.getDate());
+			dates.push(dateTo);
+		}
+		console.log(dates[0].toString());
+		console.log(dates[1].toString());
 		return dates;
 	}
 
