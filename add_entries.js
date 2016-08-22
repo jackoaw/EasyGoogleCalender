@@ -15,15 +15,32 @@ $(document).ready(function(){
 			var date = parts[0];
 			var timeDate = dt(date.split(" "));
 			var DescriptLocation = parts[1].split("AT");
-			var location = DescriptLocation[1];
+			var location = ''
+			if(DescriptLocation.length > 1)
+				location = DescriptLocation[1];
 			var descripion = DescriptLocation[0];
-			var time = timeDate[0];
-			var date = timeDate[1];
-		};
+			var time1 = timeDate[0];
+			var time2 = timeDate[1];
+			// Make requests to Google Calendar API
+			var add = {
+				'summary': descripion,
+				'location': location,
+				'start': {
+    				'dateTime': time1 + time2,
+    				'timeZone': 'America/Los_Angeles'
+  				},
+			    'end': {
+			    	'dateTime': time1 + time2,
+			    	'timeZone': 'America/Los_Angeles'
+  				},
+			}
+			console.log(add);		
+		}
 	}
 
 	// date and time [d,t]
 	// or for those more fun, downtown
+	// RETURN: Dates to and from
 	function dt(rawTime)
 	{
 		// To and from entries expected in this array. On the same day for now.
@@ -51,7 +68,7 @@ $(document).ready(function(){
 					dates.push(date);
 					var date2 = jQuery.extend(true, {}, date);
 					// assume default time of one hour
-					dates.push(date2.setTime(date.getTime()+1);
+					dates.push(date2.setTime(date.getTime()+1));
 				}
 			}
 			// Date
@@ -101,7 +118,7 @@ $(document).ready(function(){
 					{
 						date.setDay(date.getDay()+1)
 					}
-					catch(Exception e)
+					catch(e)
 					{
 						// Could not set date for some reason
 					}
