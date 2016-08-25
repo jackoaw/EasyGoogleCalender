@@ -18,7 +18,7 @@ $(document).ready(function(){
 			var date = parts[0];
 			var timeDate = dt(date.split(" "));
 			var DescriptLocation = parts[1].split("AT");
-			var location = ''
+			var location = '';
 			if(DescriptLocation.length > 1)
 				location = DescriptLocation[1];
 			var descripion = DescriptLocation[0];
@@ -46,31 +46,40 @@ $(document).ready(function(){
 	// RETURN: Dates to and from
 	function dt(rawTime)
 	{
+		console.log(rawTime);
 		// To and from entries expected in this array. On the same day for now.
 		// TODO: Expanded capabilities for events that extend over multiple days
 		var dates = [];
 		var date = new Date();
 		for (var i = 0; i < rawTime.length; i++) {
+			console.log(rawTime[i]);
 			// Time
 			if(rawTime[i].split(":").length > 1)
 			{
 				// if a date is not set, assume today
 				var time = rawTime[i].replace(" ","");
 				var timeToFrom = time.split("-");
-				// There is a speficied end time
-				if(timeToFrom.length > 0) 
+				var from = evaluateTime(timeToFrom[0]);
+				var to = evaluateTime(timeToFrom[1]);
+				// Set the time
+				date.setHours(from[0]);
+				date.setMinutes(from[1]);
+				date.setSeconds(0);
+				console.log("I reached");
+				// There is a speficied end times
+				if(timeToFrom.length > 1)
 				{
-					// console.log(timeToFrom[0]);
-					date.setTime(timeToFrom[0]);
+					console.log(date.toString());
 					// console.log(date.toString()); // Invalid date here
 					dates.push(date);
 					var date2 = new Date();
 					date2.setDate(date.getDay());
 					dates.push(date2.setTime(timeToFrom[1]));
 				}
+				// There is not
 				else
 				{
-					date.setTime(timeToFrom[0]);
+					console.log("I reached");
 					dates.push(date);
 					var date2 = new Date();
 					date2.setDate(date.getDay());
@@ -131,6 +140,7 @@ $(document).ready(function(){
 					}	
 				}
 				dates.push(date);
+				console.log(i);
 			}
 		}
 		if(dates.length < 2)
@@ -143,6 +153,33 @@ $(document).ready(function(){
 		console.log(dates[0].toString());
 		console.log(dates[1].toString());
 		return dates;
+	}
+
+	// Returns time as an int array where
+	// index 0 is hours
+	// index 1 is minutes
+	function evaluateTime(time)
+	{
+		r = [0,0]
+		time = time.split(":");
+		// Only hours listed
+		if(from.length < 1)
+		{
+			if(time[0].substring(time[0].length-2).toLowerCase() == "pm")
+				r[0] = (int(time[0].substring(0, time[0].length-2)) + 12);
+			else if(time[0].substring(time[0].length-2).toLowerCase() == "am")
+				r[0] = (int(time[0].substring(0, time[0].length-2)));
+		}
+		// There are minutes and hours
+		else
+		{
+			r[0] = int(time[0]);
+			if(time[1].substring(time[1].length-2).toLowerCase() == "pm")
+				r[1] = (int(time[1].substring(0, time[1].length-2)) + 12);
+			else if(time[1].substring(time[1].length-2).toLowerCase() == "am")
+				r[1] = (int(time[1].substring(0, time[1].length-2)));			
+		}
+		console.log(r);
 	}
 
 	function findNextDay(dayOfWeek)
