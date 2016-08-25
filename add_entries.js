@@ -60,12 +60,12 @@ $(document).ready(function(){
 				var time = rawTime[i].replace(" ","");
 				var timeToFrom = time.split("-");
 				var from = evaluateTime(timeToFrom[0]);
-				var to = evaluateTime(timeToFrom[1]);
+				if(timeToFrom.length > 1)
+					var to = evaluateTime(timeToFrom[1]);
 				// Set the time
 				date.setHours(from[0]);
 				date.setMinutes(from[1]);
 				date.setSeconds(0);
-				console.log("I reached");
 				// There is a speficied end times
 				if(timeToFrom.length > 1)
 				{
@@ -82,9 +82,13 @@ $(document).ready(function(){
 					console.log("I reached");
 					dates.push(date);
 					var date2 = new Date();
-					date2.setDate(date.getDay());
+					date2.setDate(date.getDate());
+					date2.setHours(date.getHours()+1);
+					date2.setMinutes(date.getMinutes());
+					date2.setSeconds(0);
+					console.log(dates.length);
 					// assume default time of one hour
-					dates.push(date2.setHours(date.getHours()+1));
+					dates.push(date2);
 				}
 			}
 			// Date
@@ -139,9 +143,12 @@ $(document).ready(function(){
 						// Could not set date for some reason
 					}	
 				}
-				dates.push(date);
 				console.log(i);
 			}
+		}
+		if(dates.length < 1)
+		{
+			dates.push(date);
 		}
 		if(dates.length < 2)
 		{
@@ -160,26 +167,34 @@ $(document).ready(function(){
 	// index 1 is minutes
 	function evaluateTime(time)
 	{
-		r = [0,0]
+		var r = [0,0];
 		time = time.split(":");
 		// Only hours listed
-		if(from.length < 1)
+		if(time.length < 1)
 		{
 			if(time[0].substring(time[0].length-2).toLowerCase() == "pm")
-				r[0] = (int(time[0].substring(0, time[0].length-2)) + 12);
+				r[0] = (parseInt(time[0].substring(0, time[0].length-2)) + 12);
 			else if(time[0].substring(time[0].length-2).toLowerCase() == "am")
-				r[0] = (int(time[0].substring(0, time[0].length-2)));
+				r[0] = (parseInt(time[0].substring(0, time[0].length-2)));
 		}
 		// There are minutes and hours
 		else
 		{
-			r[0] = int(time[0]);
+			r[0] = parseInt(time[0]);
 			if(time[1].substring(time[1].length-2).toLowerCase() == "pm")
-				r[1] = (int(time[1].substring(0, time[1].length-2)) + 12);
+			{
+				if(r[0] != 12)
+					r[0] += 12;
+			}
 			else if(time[1].substring(time[1].length-2).toLowerCase() == "am")
-				r[1] = (int(time[1].substring(0, time[1].length-2)));			
+			{
+				console.log(r[0]);
+				if(r[0] == 12)
+					r[0] = 0;
+			}
+			r[1] = (parseInt(time[1].substring(0, time[1].length-2)));			
 		}
-		console.log(r);
+		return r;
 	}
 
 	function findNextDay(dayOfWeek)
